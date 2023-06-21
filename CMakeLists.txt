@@ -6,8 +6,13 @@ SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 SET ( ENGINE_CORE_HEADERS
 	src/core/engine.h
-	src/core/foo.h
-	src/core/foo.cpp
+	src/core/geometry.h
+	src/core/geometry.cpp
+  src/core/renderer.h
+  src/core/renderer.cpp
+  src/core/shape.h
+  src/core/shape.cpp
+
 )
 
 INCLUDE_DIRECTORIES ( src )
