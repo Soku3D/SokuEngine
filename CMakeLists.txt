@@ -12,7 +12,8 @@ SET ( ENGINE_CORE_HEADERS
   src/core/renderer.cpp
   src/core/shape.h
   src/core/shape.cpp
-
+  src/core/texture.h
+  src/core/texture.cpp
 )
 
 INCLUDE_DIRECTORIES ( src )
