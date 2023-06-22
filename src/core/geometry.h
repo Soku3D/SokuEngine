@@ -38,7 +38,7 @@ class Vector2 {
         return *this;
     }
     Vector2<T> operator-(const Vector2<T>& v) const {
-        return Vector2<T>(x + v.x, y + v.y, z + v.z);
+        return Vector2<T>(x + v.x, y + v.y);
     }
     Vector2<T>& operator-=(const Vector2<T>& v) {
         x += v.x;
@@ -81,13 +81,13 @@ class Vector3 {
     Vector3(T xx, T yy, T zz) : x(xx), y(yy), z(zz) { assert(!HasNaNs()); }
     Vector3(T val) : x(val), y(val), z(val) { assert(!HasNaNs()); }
     T operator[](int idx) const {
-        assert(idx > -1 && idx < 3);
+        assert(idx >= 0 && idx <= 2);
         if (idx == 0) return x;
         if (idx == 1) return y;
         return z;
     }
     T& operator[](int idx) {
-        assert(idx > -1 && idx < 2);
+        assert(idx >= 0 && idx <= 2);
         if (idx == 0) return x;
         if (idx == 1) return y;
         return z;
@@ -102,12 +102,12 @@ class Vector3 {
         return *this;
     }
     Vector3<T> operator-(const Vector3<T>& v) const {
-        return Vector3<T>(x + v.x, y + v.y, z + v.z);
+        return Vector3<T>(x - v.x, y - v.y, z - v.z);
     }
     Vector3<T>& operator-=(const Vector3<T>& v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
         return *this;
     }
     Vector3<T> operator*(T v) const { return Vector3<T>(x * v, y * v, z * v); }
@@ -130,11 +130,9 @@ class Vector3 {
         z *= inv;
         return *this;
     }
-    Vector3<T>& operator-() {
-        x = -x;
-        y = -y;
-        z = -z;
-        return *this;
+    Vector3<T> operator-() {
+        Vector3<T> v(-x, -y, -z);
+        return v;
     }
     bool operator==(const Vector3<T>& v) const {
         return (x == v.x && y == v.y && z == v.z);
@@ -173,7 +171,7 @@ inline float GetLen(const Vector3<T>& v) {
     return std::sqrt((double)v.x * v.x + (double)v.y * v.y + (double)v.z * v.z);
 }
 template <typename T>
-inline Vector3<T>& nomalization(Vector3<T>& v) {
+inline Vector3<T> normalize(Vector3<T> v) {
     float len = GetLen(v);
     assert(len);
     double inv = 1.0 / len;
@@ -181,6 +179,20 @@ inline Vector3<T>& nomalization(Vector3<T>& v) {
     v.y *= inv;
     v.z *= inv;
     return v;
+}
+template <typename T>
+inline T clamp(T val, T min, T max) {
+    if (val < min) return min;
+    if (val > max) return max;
+    return val;
+}
+template <typename T>
+inline Vector3<T> clamp(Vector3<T> val, Vector3<T> min, Vector3<T> max) {
+    Vector3<T> ret = val;
+    for (int i = 0; i < 3; i++) {
+        ret[i] = clamp(val[i], min[i], max[i]);
+    }
+    return ret;
 }
 typedef Vector3<int> Vec3i;
 typedef Vector3<float> Vec3f;
@@ -241,4 +253,5 @@ template <typename T>
 bool overlaps() {
     return BoundingBox2<T>(0.0f);
 }
+
 }  // namespace engine
