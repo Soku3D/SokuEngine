@@ -12,10 +12,11 @@ class Hit {
     Vec3f point;
     Vec3f normal;
     std::shared_ptr<Shape> pShape;
-    /* Hit(float d, const Vec3f& point, const Vec3f& normal)
-         : d(d), point(point), normal(normal), shape(nullptr)
-     {
-     }*/
+    Vec2f uv;
+    Hit(float d, const Vec3f& point, const Vec3f& normal)
+        : d(d), point(point), normal(normal), pShape(nullptr)
+    {
+    }
 };
 }  // namespace engine
 #endif

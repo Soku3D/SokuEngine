@@ -2,6 +2,10 @@
 
 #ifndef ENGINE_CORE_ENGINE_H
 #define ENGINE_CORE_ENGINE_H
+
+#define STRINGIZING(x) #x
+#define EXPAND(x) STRINGIZING(x)
+
 #include <type_traits>
 #include <algorithm>
 #include <cinttypes>
@@ -32,9 +36,13 @@ namespace engine{
     class Ray;
     class Texture;
     class Hit;
-    class Shape;
-    class Sphere;
     class Light;
     class Raytracer;
-}
+    class Shape;
+    class Sphere;
+    class Trinalge;
+    class Rectangle;  
+
+   
+    }
 #endif

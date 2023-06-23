@@ -30,7 +30,7 @@ class Vector2 {
         return y;
     }
     Vector2<T> operator+(const Vector2<T>& v) const {
-        return Vector3<T>(x + v.x, y + v.y);
+        return Vector2<T>(x + v.x, y + v.y);
     }
     Vector2<T>& operator+=(const Vector2<T>& v) {
         x += v.x;
@@ -63,13 +63,16 @@ class Vector2 {
         y *= inv;
         return *this;
     }
-    Vector2<T>& operator-() {
-        x = -x;
-        y = -y;
-        return *this;
+    Vector2<T> operator-() {
+        Vector2<T> v(-x, -y, -z); 
+        return v;
     }
     bool operator==(const Vector2<T>& v) const {
         return (x == v.x && y == v.y);
+    }
+    friend std::ostream& operator<<(std::ostream& out, Vector2<T>& v) {
+        out << '[' << v.x << ", " << v.y << ']' << '\n';
+        return out;
     }
 };
 template <typename T>
@@ -117,6 +120,7 @@ class Vector3 {
         z *= v;
         return *this;
     }
+    
     Vector3<T> operator/(T v) const {
         assert(v != 0);
         float inv = 1.0f / v;
@@ -146,6 +150,7 @@ std::ostream& operator<<(std::ostream& out, Vector3<T>& v) {
     out << '[' << v.x << ", " << v.y << ", " << v.z << ']' << '\n';
     return out;
 }
+
 template <typename T>
 inline Vector3<T> operator*(T s, const Vector3<T>& v) {
     return v * s;
@@ -168,7 +173,7 @@ inline Vector3<T>& cross(const Vector3<T>& v1, const Vector3<T>& v2) {
 }
 template <typename T>
 inline float GetLen(const Vector3<T>& v) {
-    return std::sqrt((double)v.x * v.x + (double)v.y * v.y + (double)v.z * v.z);
+    return static_cast<float>(std::sqrt((double)v.x * v.x + (double)v.y * v.y + (double)v.z * v.z));
 }
 template <typename T>
 inline Vector3<T> normalize(Vector3<T> v) {

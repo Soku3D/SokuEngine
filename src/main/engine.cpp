@@ -3,17 +3,13 @@
 #include "renderer.h"
 #include "texture.h"
 
-#define STRINGIZING(x) #x
-#define EXPAND(x) STRINGIZING(x)
-
-
+ 
 int main() {
-    int width = 1920, height = 1080;
     
+    int width = 1920*4, height = 1080*4;
     std::string buildPath = EXPAND(OUTPUT_PATH);
-    std::string imgPath = buildPath + "/../src/textures/background.png";
+    std::string imgPath = buildPath + "/../src/textures/";
     std::string outputPath = buildPath + "/../Results/";
-
     std::cout << "Enter the file name to save : ";
     std::string filename;
     std::cin >> filename;

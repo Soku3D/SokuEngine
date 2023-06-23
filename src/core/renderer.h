@@ -19,6 +19,7 @@ class Raytracer {
     Light light;
     Raytracer(int width, int height); 
     Hit FindClosestShape(const Ray& ray);
+    bool IsShadow(const Ray& ray);
     Vec3f traceRay(const Ray& ray, int recursiveLevel);
     Vec3f traceRay2x2(const Vec3f& currPos, float currD, int recursiveLevel);
     void Render(std::vector<Vec3f>& pixels);
