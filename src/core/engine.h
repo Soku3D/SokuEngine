@@ -42,7 +42,8 @@ namespace engine{
     class Sphere;
     class Trinalge;
     class Rectangle;  
-
+    class Mesh;
+    class Rasterization;
    
     }
 #endif

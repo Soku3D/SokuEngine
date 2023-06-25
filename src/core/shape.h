@@ -7,6 +7,7 @@
 #include "hit.h"
 #include "texture.h"
 namespace engine {
+
 class Shape {
   public:
     Vec3f amb;

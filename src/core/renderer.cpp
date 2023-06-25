@@ -6,10 +6,10 @@ namespace engine {
 Raytracer::Raytracer(int width, int height)
     : width(width),
       height(height),
-      invW(1.0f / width),
-      invH(1.0f / height),
+      invW(1.0f / (width - 1)),
+      invH(1.0f / (height - 1)),
       light(Vec3f(2.0f, 3.0f, -1.0f)) {
-    aspect = width * invH;
+    aspect = (float)width / height;
 
     std::shared_ptr<Texture> backgroundTexture =
         std::make_shared<Texture>("background.png");
@@ -98,16 +98,16 @@ Raytracer::Raytracer(int width, int height)
     floor->reflection = 0.4;
     floor->ambTexture = customTexture;
 
-    shapes.push_back(transparentSphere);
-    shapes.push_back(transparentSphere2);
+    // shapes.push_back(transparentSphere);
+    // shapes.push_back(transparentSphere2);
 
-    shapes.push_back(reflectiveSphere1);
-    shapes.push_back(reflectiveSphere2);
-    shapes.push_back(reflectiveSphere3);
+    // shapes.push_back(reflectiveSphere1);
+    // shapes.push_back(reflectiveSphere2);
+    // shapes.push_back(reflectiveSphere3);
     shapes.push_back(reflectiveSphere4);
 
-    shapes.push_back(floor);
-    // shapes.push_back(triangle);
+    // shapes.push_back(floor);
+    //  shapes.push_back(triangle);
     shapes.push_back(background);
 
     eyePos = Vec3f(0.0f, 0.0f, -1.5f);
@@ -221,23 +221,63 @@ Vec3f Raytracer::traceRay2x2(const Vec3f& currPos, float currD,
 }
 void Raytracer::Render(std::vector<Vec3f>& pixels) {
     std::fill(pixels.begin(), pixels.end(), Vec3f(0.0f));
-#pragma omp parallel for
+    // #pragma omp parallel for
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Vec3f worldPos = TransformScreenToWorld(x, y);
+            // std::cout << worldPos << '\n';
             float d = 2.0f * invH;
             pixels[y * width + x] =
-                clamp(traceRay2x2(worldPos, d, 4), Vec3f(0.0f), Vec3f(1.0f));
+                clamp(traceRay2x2(worldPos, d, 0), Vec3f(0.0f), Vec3f(1.0f));
             // std::cout << x << ' ' << y << '\n';
         }
     }
 }
 Vec3f Raytracer::TransformScreenToWorld(int x, int y) {
-    float xScale = invW * 2.0f * aspect;
+    float xScale = invW * 2.0f;
     float yScale = invH * 2.0f;
-    float X = x * xScale - aspect;
+    float X = (x * xScale - 1.0f) * aspect;
     float Y = y * yScale - 1.0f;
     return Vec3f(X, -Y, 0.0f);
 }
+Rasterization::Rasterization(const int& width, const int& height)
+    : width(width), height(height), aspect((float)width / height) {
+    vertecies[0] = Vec3f(0.0f, 0.5f, 1.0f);
+    vertecies[1] = Vec3f(1.0f, -0.5f, 1.0f);
+    vertecies[2] = Vec3f(-1.0f, -0.5f, 1.0f);
+}
+float Rasterization::CCW(const Vec2f& v0, const Vec2f& v1, const Vec2f& point) {
+    Vec2f v01 = v1 - v0;
+    Vec2f v0p = point - v0;
 
+    return (v01.x * v0p.y - v01.y * v0p.x);
+}
+Vec2f Rasterization::ProjectWorldToScreen(Vec3f vertex) {
+    
+    Vec2f NDC = Vec2f(vertex.x / aspect, vertex.y);
+    float xScale = (width-1) * 0.5f;
+    float yScale = (1-height) * 0.5f;
+
+    return Vec2f((NDC.x + 1) * xScale, (NDC.y-1)*yScale);
+}
+void Rasterization::Render(std::vector<Vec3f>& pixels) {
+
+    const auto v0 = ProjectWorldToScreen(vertecies[0]);
+    const auto v1 = ProjectWorldToScreen(vertecies[1]);
+    const auto v2 = ProjectWorldToScreen(vertecies[2]);
+
+
+    for (size_t y = 0; y < height; y++) {
+        for (size_t x = 0; x < width; x++) {
+            const Vec2f point = Vec2f(x, y);
+            const float w0 = CCW(v0, v1, point);
+            const float w1 = CCW(v1, v2, point);
+            const float w2 = CCW(v2, v0, point);
+            
+            if (w0 >= 0.0f && w1 >= 0.0f && w2 >= 0.0f) {
+                pixels[y * width + x] = Vec3f(1.0f);
+            }
+        }
+    }
+}
 }  // namespace engine

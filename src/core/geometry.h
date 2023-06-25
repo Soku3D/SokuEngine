@@ -38,11 +38,11 @@ class Vector2 {
         return *this;
     }
     Vector2<T> operator-(const Vector2<T>& v) const {
-        return Vector2<T>(x + v.x, y + v.y);
+        return Vector2<T>(x - v.x, y - v.y);
     }
     Vector2<T>& operator-=(const Vector2<T>& v) {
-        x += v.x;
-        y += v.y;
+        x -= v.x;
+        y -= v.y;
         return *this;
     }
     Vector2<T> operator*(T v) const { return Vector2<T>(x * v, y * v); }
